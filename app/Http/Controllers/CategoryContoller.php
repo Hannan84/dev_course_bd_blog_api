@@ -116,8 +116,6 @@ class CategoryContoller extends Controller
     public function update(Request $request, $id)
     {
 
-//        return $request;
-
         $slug = Helper::make_slug($request->name);
         $categories  = Category::select('slug')->get();
         $category = Category::findOrFail($id);
