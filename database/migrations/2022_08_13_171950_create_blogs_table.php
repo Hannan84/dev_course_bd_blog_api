@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('title', 255)->nullable();
             $table->string('slug', 255)->nullable();
             $table->string('image', 255)->nullable();
-            $table->text('content')->nullable();
+            $table->text('contents')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->text('meta_keywords')->nullable();
             $table->text('meta_description')->nullable();
