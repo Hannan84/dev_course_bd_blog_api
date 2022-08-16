@@ -214,4 +214,5 @@ class BlogController extends Controller
             "data" => $blog
         ]);
     }
+
 }
