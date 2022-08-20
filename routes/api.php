@@ -64,5 +64,7 @@ Route::prefix('/front')->group(function (){
     Route::get('/blogs', [App\Http\Controllers\Front\FrontendController::class,'blogs']);
     Route::get('/blogs/{search}', [App\Http\Controllers\Front\FrontendController::class,'blogSearch']);
     Route::get('/blogs-slug/{slug}', [App\Http\Controllers\Front\FrontendController::class,'blogdetails']);
+    Route::post('/comment/{id}', [App\Http\Controllers\Front\CommentController::class,'store']);
+    Route::get('/comments', [App\Http\Controllers\Front\CommentController::class,'index']);
 
 });
