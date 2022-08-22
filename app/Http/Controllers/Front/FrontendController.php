@@ -13,37 +13,39 @@ class FrontendController extends Controller
     public function blogs(Request $request){
 
 
-        $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
+        $category = $request->category;
 
-        $latestblogs = Blog::where('status', 1)->orderBy('id', 'DESC')->get();
+//        return $category;
 
+        $catid = null;
+        if (!empty($category)) {
+            $data['category'] = Category::where('slug', $category)->firstOrFail();
+            $catid = $data['category']->id;
+        }
+//        return $catid;
 
-        return response()->json([
-            'success' => true,
-            'massage' => '',
-            'data' => $categories,$latestblogs
-        ]);
+        $term = $request->term;
+
+//        return $term;
+
+        $blogs = Blog::where('status', 1)
+            ->when($catid, function ($query, $catid) {
+                return $query->where('category_id', $catid);
+            })
+            ->when($term, function ($query, $term) {
+                return $query->where('title', 'like', '%'.$term.'%');
+            })->simplePaginate(3);
+            return response()->json([
+                'success' => true,
+                'massage' => '',
+                'data' => $blogs
+            ]);
+
     }
-
-    public function blogSearch($search){
-
-//        return $search;
-
-        $blogs = Blog::where('title', 'like', '%'.$search.'%')->orderBy('id', 'DESC')->get();
-
-        return response()->json([
-            'success' => true,
-            'massage' => '',
-            'data' => $blogs
-        ]);
-    }
-
 
     public function blogdetails($slug) {
 
         $blog = Blog::where('slug', $slug)->firstOrFail();
-//        $latestblogs = Blog::where('status', 1)->orderBy('id', 'DESC')->limit(4)->get();
-//        $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
 
         return response()->json([
             'success' => true,

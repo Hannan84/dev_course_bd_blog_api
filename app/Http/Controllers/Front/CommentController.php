@@ -39,18 +39,16 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$id)
+    public function store(Request $request)
     {
+
+        $id = $request->blogId;
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255',],
             'comment' => ['required']
         ]);
 
         $comment = new Comment();
         $comment->blogId = $id;
-        $comment->name = $request->name;
-        $comment->email = $request->email;
         $comment->comment = $request->comment;
         $comment->save();
 
