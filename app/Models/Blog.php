@@ -14,8 +14,8 @@ class Blog extends Model
         return $this->belongsTo('App\Models\Category');
     }
 
-    public function comment()
+    public function comments()
     {
-        return $this->hasMany('App\Models\Comment');
+        return $this->hasMany('App\Models\Comment')->whereNull('parent_id');
     }
 }
