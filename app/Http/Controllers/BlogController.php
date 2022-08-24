@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Helper;
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BlogController extends Controller
 {
@@ -15,12 +16,21 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = Blog::all();
-        return response()->json([
-            "success" => true,
-            "message" => "Blogs List",
-            "data" => $blogs
-        ]);
+        $user_id = Auth::id();
+        $blogs = Blog::where('user_id',$user_id)->get();
+        if ($blogs) {
+            return response()->json([
+                "success" => true,
+                "message" => "Blogs List",
+                "data" => $blogs
+            ]);
+        }
+        else{
+            return response()->json([
+                'success' => false,
+                'massage' => 'Blog Not Found'
+            ],404);
+        }
     }
 
     /**
@@ -74,7 +84,7 @@ class BlogController extends Controller
 
             $blog->image = $image;
         }
-
+        $blog->user_id = Auth::id();
         $blog->category_id = $request->category_id;
         $blog->title = $request->title;
         $blog->slug = $slug;
@@ -100,15 +110,21 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        $blog = Blog::find($id);
-        if (is_null($blog)) {
-            return $this->sendError('Blog not found.');
+        $user_id = Auth::id();
+        $blog = Blog::where('user_id',$user_id)->find($id);
+        if ($blog) {
+            return response()->json([
+                "success" => true,
+                "message" => "Blog retrieved successfully.",
+                "data" => $blog
+            ]);
         }
-        return response()->json([
-            "success" => true,
-            "message" => "Blog retrieved successfully.",
-            "data" => $blog
-        ]);
+        else{
+            return response()->json([
+                'success' => false,
+                'massage' => 'Blog Not Found'
+            ],404);
+        }
     }
 
     /**
@@ -157,7 +173,8 @@ class BlogController extends Controller
             'category_id' => 'required'
         ]);
 
-        $blog = Blog::find($id);
+        $user_id = Auth::id();
+        $blog = Blog::where('user_id',$user_id)->find($id);
 //        return $blog;
 
         if ($blog){
@@ -173,7 +190,7 @@ class BlogController extends Controller
                 $blog->image = $image;
 
             }
-
+            $blog->user_id = Auth::id();
             $blog->category_id = $request->category_id;
             $blog->title = $request->title;
             $blog->slug = $slug;
@@ -206,13 +223,22 @@ class BlogController extends Controller
      */
     public function destroy($id)
     {
-        $blog = Blog::find($id);
-        $blog->delete();
-        return response()->json([
-            "success" => true,
-            "message" => "Blog deleted successfully.",
-            "data" => $blog
-        ]);
+        $user_id = Auth::id();
+        $blog = Blog::where('user_id',$user_id)->find($id);
+        if ($blog) {
+            $blog->delete();
+            return response()->json([
+                "success" => true,
+                "message" => "Blog delete successfully.",
+                "data" => $blog
+            ]);
+        }
+        else{
+            return response()->json([
+                'success' => false,
+                'massage' => 'Blog Not Found'
+            ],404);
+        }
     }
 
 }
