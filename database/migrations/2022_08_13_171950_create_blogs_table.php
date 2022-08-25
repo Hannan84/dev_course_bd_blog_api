@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
-            $table->integer('category_id')->nullable();
+//            $table->integer('category_id')->nullable();
             $table->string('title', 255)->nullable();
             $table->string('slug', 255)->nullable();
-            $table->string('image', 255)->nullable();
+            $table->integer('image_id')->nullable();
+//            $table->string('image', 255)->nullable();
             $table->text('contents')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->text('meta_keywords')->nullable();

@@ -50,6 +50,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:sanctum'],function (){
     Route::put('/blog/update/{id}', [App\Http\Controllers\BlogController::class,'update']);
     /*** route for delete blog from database ***/
     Route::delete('/blog/destroy/{id}', [App\Http\Controllers\BlogController::class,'destroy']);
+
+    /***    Image Table Route    ***/
+    /*** route for store image into database ***/
+    Route::post('/image/store', [App\Http\Controllers\ImageController::class,'store']);
 });
 
 

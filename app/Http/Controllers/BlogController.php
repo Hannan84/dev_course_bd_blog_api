@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helper;
 use App\Models\Blog;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,9 +54,7 @@ class BlogController extends Controller
     {
         $slug = Helper::make_slug($request->title);
         $blogs = Blog::select('slug')->get();
-
         $request->validate([
-            'image' => 'required|mimes:jpeg,jpg,png',
             'title' => [
                 'required',
                 'unique:blogs,title',
@@ -70,30 +69,23 @@ class BlogController extends Controller
             ],
             'status' => 'required',
             'contents' => 'required',
-            'category_id' => 'required'
+            'category_id.*' => 'required'
         ]);
 
         $blog = new Blog();
-
-        if($request->hasFile('image')){
-
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $image = time().rand().'.'.$extension;
-            $file->move('assets/front/img/blog/', $image);
-
-            $blog->image = $image;
-        }
         $blog->user_id = Auth::id();
-        $blog->category_id = $request->category_id;
         $blog->title = $request->title;
         $blog->slug = $slug;
+        $blog->image_id = $request->image_id;
         $blog->contents = $request->contents;
         $blog->status = $request->status;
         $blog->meta_keywords = $request->meta_keywords;
         $blog->meta_description = $request->meta_description;
         $blog->serial_number = $request->serial_number;
         $blog->save();
+
+        $category = Category::find($request->category_ids);
+        $blog->categories()->attach($category);
 
         return response()->json([
             'success' => true,

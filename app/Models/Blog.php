@@ -14,13 +14,18 @@ class Blog extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo('App\Models\Category');
+        return $this->belongsToMany(Category::class);
     }
 
     public function comments()
     {
         return $this->hasMany('App\Models\Comment')->whereNull('parent_id');
+    }
+
+    public function image()
+    {
+        return $this->belongsTo('App\Models\Image');
     }
 }
