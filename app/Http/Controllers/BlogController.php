@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Helper;
 use App\Models\Blog;
 use App\Models\Category;
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -87,11 +88,22 @@ class BlogController extends Controller
         $category = Category::find($request->category_ids);
         $blog->categories()->attach($category);
 
-        return response()->json([
-            'success' => true,
-            'massage' => 'Blog create successfully!',
-            'data' => $blog
-        ]);
+        if ($blog){
+            return response()->json([
+                'success' => true,
+                'massage' => 'Blog create successfully!',
+                'data' => $blog
+            ]);
+        }
+        else{
+            $image = Image::findorfail($request->image_id);
+            $image->delete();
+            return response()->json([
+                'success' => false,
+                'massage' => 'Delete image',
+                'data' => $image
+            ]);
+        }
     }
 
     /**
@@ -145,7 +157,6 @@ class BlogController extends Controller
         $blog = Blog::findOrFail($id);
 
         $request->validate([
-            'image' => 'mimes:jpeg,jpg,png',
             'title' => [
                 'required',
                 'unique:blogs,title',
@@ -162,36 +173,26 @@ class BlogController extends Controller
             ],
             'status' => 'required',
             'contents' => 'required',
-            'category_id' => 'required'
+            'category_id.*' => 'required'
         ]);
 
         $user_id = Auth::id();
         $blog = Blog::where('user_id',$user_id)->find($id);
-//        return $blog;
 
         if ($blog){
-
-            if($request->hasFile('image')){
-                @unlink('assets/front/img/blog/'. $blog->image);
-
-                $file = $request->file('image');
-                $extension = $file->getClientOriginalExtension();
-                $image = time().rand().'.'.$extension;
-                $file->move('assets/front/img/blog/', $image);
-
-                $blog->image = $image;
-
-            }
             $blog->user_id = Auth::id();
-            $blog->category_id = $request->category_id;
             $blog->title = $request->title;
             $blog->slug = $slug;
+            $blog->image_id = $request->image_id;
             $blog->contents = $request->contents;
             $blog->status = $request->status;
             $blog->meta_keywords = $request->meta_keywords;
             $blog->meta_description = $request->meta_description;
             $blog->serial_number = $request->serial_number;
             $blog->save();
+
+            $category = Category::find($request->category_ids);
+            $blog->categories()->attach($category);
 
             return response()->json([
                 'success' => true,
@@ -217,6 +218,7 @@ class BlogController extends Controller
     {
         $user_id = Auth::id();
         $blog = Blog::where('user_id',$user_id)->find($id);
+
         if ($blog) {
             $blog->delete();
             return response()->json([

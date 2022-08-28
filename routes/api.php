@@ -54,6 +54,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:sanctum'],function (){
     /***    Image Table Route    ***/
     /*** route for store image into database ***/
     Route::post('/image/store', [App\Http\Controllers\ImageController::class,'store']);
+    Route::delete('/image/destroy/{id}', [App\Http\Controllers\ImageController::class,'destroy']);
 });
 
 

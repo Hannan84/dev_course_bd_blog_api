@@ -98,11 +98,19 @@ class ImageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Image  $image
+     * @param  \App\Models\Image  $image_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Image $image)
+    public function destroy($id)
     {
-        //
+        $image  = Image::find($id);
+        unlink("assets/front/img/blog/".$image->image_title);
+        Image::where("id", $image->id)->delete();
+
+        return response()->json([
+            'success' => true,
+            'massage' => 'Image delete successfully!',
+            'data' => $image
+        ]);
     }
 }
