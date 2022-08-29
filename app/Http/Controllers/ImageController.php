@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Image;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ImageController extends Controller
 {
@@ -51,7 +52,10 @@ class ImageController extends Controller
 
             $blog_image->image_title = $image;
         }
+        $blog_image->user_id = Auth::id();
+        $blog_image->blog_id = $request->blog_id;
         $blog_image->alt_text = $request->alt_text;
+
         $blog_image->save();
 
         return response()->json([

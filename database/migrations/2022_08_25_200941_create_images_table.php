@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->integer('blog_id')->nullable();
             $table->string('image_title')->nullable();
             $table->string('alt_text')->nullable();
             $table->timestamps();
