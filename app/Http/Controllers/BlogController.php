@@ -89,6 +89,11 @@ class BlogController extends Controller
         $blog->categories()->attach($category);
 
         if ($blog){
+
+            $image = Image::findorfail($request->image_id);
+            $image->blog_id = $blog->id;
+            $image->save();
+
             return response()->json([
                 'success' => true,
                 'massage' => 'Blog create successfully!',
