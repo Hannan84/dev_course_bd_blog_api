@@ -102,6 +102,7 @@ class BlogController extends Controller
         }
         else{
             $image = Image::findorfail($request->image_id);
+            unlink("assets/front/img/blog/".$image->image_title);
             $image->delete();
             return response()->json([
                 'success' => false,

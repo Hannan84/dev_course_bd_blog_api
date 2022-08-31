@@ -33,6 +33,7 @@ class DeleteImage extends Command
         $blog_images = Image::where([['created_at', '<', Carbon::now()->subHours(8)],['blog_id','=',null]])->get();
         foreach ($blog_images as $image) {
             $image->delete();
+            unlink("public/assets/front/img/blog/".$image->image_title);
         }
     }
 }
