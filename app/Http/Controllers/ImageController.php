@@ -109,7 +109,7 @@ class ImageController extends Controller
     {
         $image  = Image::find($id);
         unlink("assets/front/img/blog/".$image->image_title);
-        Image::where("id", $image->id)->delete();
+        $image->delete();
 
         return response()->json([
             'success' => true,
