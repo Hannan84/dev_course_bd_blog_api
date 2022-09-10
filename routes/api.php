@@ -62,7 +62,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:sanctum'],function (){
 Route::prefix('/front')->group(function (){
 
     Route::get('/blogs', [App\Http\Controllers\Front\FrontendController::class,'blogs']);
-    Route::get('/blogs-slug/{slug}', [App\Http\Controllers\Front\FrontendController::class,'blogdetails']);
+    Route::get('/blog/details/{slug}', [App\Http\Controllers\Front\FrontendController::class,'blogdetails']);
     Route::get('/comments/{id}', [App\Http\Controllers\Front\CommentController::class,'index']);
     Route::post('/comment', [App\Http\Controllers\Front\CommentController::class,'store']);
     Route::post('/reply', [App\Http\Controllers\Front\CommentController::class,'replyStore']);
