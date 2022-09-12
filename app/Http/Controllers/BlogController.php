@@ -90,9 +90,11 @@ class BlogController extends Controller
 
         if ($blog){
 
-            $image = Image::findorfail($request->image_id);
-            $image->blog_id = $blog->id;
-            $image->save();
+            if (isset($blog->image_id)){
+                $image = Image::findorfail($request->image_id);
+                $image->blog_id = $blog->id;
+                $image->save();
+            }
 
             return response()->json([
                 'success' => true,
@@ -101,12 +103,14 @@ class BlogController extends Controller
             ]);
         }
         else{
-            $image = Image::findorfail($request->image_id);
-            unlink("assets/front/img/blog/".$image->image_title);
-            $image->delete();
+            if (isset($blog->image_id)){
+                $image = Image::findorfail($request->image_id);
+                unlink("assets/front/img/blog/".$image->image_title);
+                $image->delete();
+            }
             return response()->json([
                 'success' => false,
-                'massage' => 'Delete image',
+                'massage' => 'Blog Not Create and Delete image',
                 'data' => $image
             ]);
         }
